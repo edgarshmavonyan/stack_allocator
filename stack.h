@@ -57,6 +57,15 @@ public:
 
     void deallocate(pointer ptr, size_t size) {}
 
+    template<class U>
+    void destroy(U* ptr);
+
+
+    template<class U, class... Args>
+    void construct(U* ptr, Args&&... args) {
+        ::new((void *)ptr) U(std::forward<Args>(args)...);
+    }
+
 };
 
 
@@ -107,4 +116,10 @@ StackAllocator<T>::~StackAllocator() {
         next = next->_nextArea;
         delete cur;
     }
+}
+
+template<class T>
+template<class U>
+void StackAllocator<T>::destroy(U *ptr) {
+    ptr->~U();
 }

@@ -8,7 +8,7 @@ private:
     template<class>
     friend class StackAllocator;
 
-    static const size_t MAX_ALLOCATION = 1000000;
+    static const size_t MAX_ALLOCATION = 1048576;
 
     char* _cur;
     size_t _available;

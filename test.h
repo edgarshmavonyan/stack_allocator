@@ -4,14 +4,19 @@
 #include <list>
 #include <iostream>
 
+const size_t TEST_SIZE = 10000000;
+
 std::vector<std::pair<int, int> > generateSequence(size_t size) {
-    std::vector<std::pair<int, int> > result;
+    std::vector<std::pair<int, int> > result(size);
     size_t curSize = 0;
+
     for (size_t i = 0; i < size; i++) {
         if (curSize > 0 && rand() % 2) {
-            result.emplace_back(std::make_pair(-1, -1));
-        } else
-            result.emplace_back(std::make_pair(1, rand() % 100500));
+            result[i].first = -1;
+        } else {
+            result[i].first = 1;
+            result[i].second = rand() % 100500;
+        }
     }
     return result;
 };
@@ -55,24 +60,21 @@ double doInsertTesting(const std::vector<int>& sequence, bool toErase) {
 }
 
 TEST(testRandomSequence, stackTest) {
-    const size_t testSize = 10000000;
-    auto sequence = generateSequence(testSize);
+    auto sequence = generateSequence(TEST_SIZE);
     std::cout << "Random test" << std::endl;
     std::cout << "User stack time: " << doRandomTesting<StackAllocator<int> >(sequence) << std::endl;
     std::cout << "Built-in stack time: " << doRandomTesting<std::allocator<int> >(sequence) << std::endl;
 }
 
 TEST(testFullInsert, stackTest) {
-    const size_t testSize = 10000000;
-    auto sequence = generateInsert(testSize);
+    auto sequence = generateInsert(TEST_SIZE);
     std::cout << "Insert test" << std::endl;
     std::cout << "User stack time: " << doInsertTesting<StackAllocator<int> >(sequence, false) << std::endl;
     std::cout << "Built-in stack time: " << doInsertTesting<std::allocator<int> >(sequence, false) << std::endl;
 }
 
 TEST(testInsertPop, stackTest) {
-    const size_t testSize = 10000000;
-    auto sequence = generateInsert(testSize);
+    auto sequence = generateInsert(TEST_SIZE);
     std::cout << "InsertPop test" << std::endl;
     std::cout << "User stack time: " << doInsertTesting<StackAllocator<int> >(sequence, true) << std::endl;
     std::cout << "Built-in stack time: " << doInsertTesting<std::allocator<int> >(sequence, true) << std::endl;

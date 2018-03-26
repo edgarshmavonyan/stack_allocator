@@ -1,10 +1,11 @@
 #include <iostream>
 #include <list>
 #include "stack.h"
+#include "test.h"
 #include <vector>
 #include <ctime>
 #include <iomanip>
-
+/**
 std::vector<std::pair<int, int> > generateSequence(size_t size) {
     std::vector<std::pair<int, int> > result;
 //    for (size_t i = 0; i < size; i++) {
@@ -31,7 +32,7 @@ double doTesting(const std::vector<std::pair<int, int> >& res) {
     }
     t = clock() - t;
     return double(t)/CLOCKS_PER_SEC;
-}
+}**/
 
 int main() {
 //    srand(time(0));

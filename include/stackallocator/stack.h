@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <list>
 
 // Definition
 
@@ -31,13 +32,15 @@ private:
     typedef AllocationArea* area_pointer;
     typedef AllocationArea area;
 
-    size_t areaCount;
+    size_t _areaCount;
     area_pointer _start;
     area_pointer _cur;
 
     area_pointer _createNode();
 
 public:
+    typedef size_t size_type;
+    typedef std::ptrdiff_t difference_type;
     typedef T value_type;
     typedef T* pointer;
     typedef const T* const_pointer;
@@ -46,17 +49,23 @@ public:
 
     StackAllocator();
 
+    StackAllocator(const StackAllocator&) {}
+
+    template<class U>
+    StackAllocator(const StackAllocator<U>&);
+
     ~StackAllocator();
 
-    template<typename T1>
+    template<class U>
     struct rebind {
-        typedef StackAllocator<T1> other;
+        typedef StackAllocator<U> other;
     };
 
     pointer allocate(size_t requiredMemory);
 
     void deallocate(pointer ptr, size_t size) {}
 
+    /*
     template<class U>
     void destroy(U* ptr);
 
@@ -65,9 +74,8 @@ public:
     void construct(U* ptr, Args&&... args) {
         ::new((void *)ptr) U(std::forward<Args>(args)...);
     }
-
+    */
 };
-
 
 //Implementation
 
@@ -86,7 +94,7 @@ char* AllocationArea::_allocate(size_t requiredMemory) {
 
 template<class T>
 typename StackAllocator<T>::area_pointer StackAllocator<T>::_createNode() {
-    areaCount++;
+    _areaCount++;
     return _cur = _cur->_nextArea = new area();
 }
 
@@ -104,7 +112,13 @@ AllocationArea::~AllocationArea() {
 }
 
 template<class T>
-StackAllocator<T>::StackAllocator() : areaCount(1), _start(new AllocationArea()), _cur(_start) {}
+StackAllocator<T>::StackAllocator() : _areaCount(1), _start(new AllocationArea()), _cur(_start) {}
+
+
+// may be we need to change it
+template<class T, class U>
+StackAllocator<T>::StackAllocator(const StackAllocator<U>& other) : 
+        _areaCount(1), _start(StackAllocator<T>()), _cur(_start) {}
 
 template<class T>
 StackAllocator<T>::~StackAllocator() {

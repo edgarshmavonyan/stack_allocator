@@ -1,35 +1,9 @@
+//#include "test.h"
+#include "stackallocator/stack.h"
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include "stack.h"
-#include <list>
-#include <iostream>
+#include "test/testGeneration.h"
 
-const size_t TEST_SIZE = 10000000;
-
-std::vector<std::pair<int, int> > generateSequence(size_t size) {
-    std::vector<std::pair<int, int> > result(size);
-    size_t curSize = 0;
-
-    for (size_t i = 0; i < size; i++) {
-        if (curSize > 0 && rand() % 2) {
-            result[i].first = -1;
-        } else {
-            result[i].first = 1;
-            result[i].second = rand() % 100500;
-        }
-    }
-    return result;
-};
-
-std::vector<int> generateInsert(size_t size) {
-    std::vector<int> result(size);
-    for (size_t i = 0; i < size; i++) {
-        result[i] = rand();
-    }
-    return result;
-}
-
-template<class alloc>
+template<class alloc = std::allocator<int> >
 double doRandomTesting(const std::vector<std::pair<int, int> >& sequence) {
     std::list<int, alloc> tested;
     clock_t t = clock();
@@ -44,7 +18,7 @@ double doRandomTesting(const std::vector<std::pair<int, int> >& sequence) {
 }
 
 
-template<class alloc>
+template<class alloc = std::allocator<int> >
 double doInsertTesting(const std::vector<int>& sequence, bool toErase) {
     std::list<int, alloc> tested;
     clock_t t = clock();
@@ -59,23 +33,28 @@ double doInsertTesting(const std::vector<int>& sequence, bool toErase) {
     return double(t)/CLOCKS_PER_SEC;
 }
 
-TEST(testRandomSequence, stackTest) {
+TEST(testRandomSequence, DISABLED_stackTest) {
     auto sequence = generateSequence(TEST_SIZE);
     std::cout << "Random test" << std::endl;
     std::cout << "User stack time: " << doRandomTesting<StackAllocator<int> >(sequence) << std::endl;
     std::cout << "Built-in stack time: " << doRandomTesting<std::allocator<int> >(sequence) << std::endl;
 }
 
-TEST(testFullInsert, stackTest) {
+TEST(testFullInsert, DISABLED_stackTest) {
     auto sequence = generateInsert(TEST_SIZE);
     std::cout << "Insert test" << std::endl;
     std::cout << "User stack time: " << doInsertTesting<StackAllocator<int> >(sequence, false) << std::endl;
     std::cout << "Built-in stack time: " << doInsertTesting<std::allocator<int> >(sequence, false) << std::endl;
 }
 
-TEST(testInsertPop, stackTest) {
+TEST(testInsertPop, DISABLED_stackTest) {
     auto sequence = generateInsert(TEST_SIZE);
     std::cout << "InsertPop test" << std::endl;
     std::cout << "User stack time: " << doInsertTesting<StackAllocator<int> >(sequence, true) << std::endl;
     std::cout << "Built-in stack time: " << doInsertTesting<std::allocator<int> >(sequence, true) << std::endl;
+}
+
+int main(int argc, char* argv[]) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

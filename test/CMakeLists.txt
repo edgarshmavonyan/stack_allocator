@@ -10,4 +10,4 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(test_Xorlist test_Xorlist.cc)
 target_link_libraries(test_Xorlist gtest gtest_main)
-add_test(NAME test_xorlist COMMAND test_Xorlist)
+add_test(NAME Test_XorList COMMAND test_Xorlist)

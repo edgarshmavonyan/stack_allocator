@@ -6,6 +6,9 @@
 template<typename T>
 struct XorListIterator {
 
+    template<typename U>
+    friend class XorList;
+
     typedef T value_type;
     typedef T* pointer;
     typedef std::ptrdiff_t difference_type;

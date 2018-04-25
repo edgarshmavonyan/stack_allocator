@@ -31,7 +31,9 @@ protected:
     size_t _size;
 
 
-    void _free(node_pointer);
+    void _free(node_pointer toDelete);
+
+    node_pointer _createNode(const T& value);
 
 public:
     explicit XorList(const allocator_type& alloc = Allocator());
@@ -42,6 +44,16 @@ public:
 
     bool empty() const;
 
+    iterator begin();
+
+    iterator end();
+
+    reverse_iterator rbegin();
+
+    reverse_iterator rend();
+
+    iterator insert_after(iterator pos, const T& value);
+
     void push_back(const_reference element);
 
     void push_front(const_reference element);
@@ -51,14 +63,6 @@ public:
     void pop_front();
 
     void clear();
-
-    iterator begin();
-
-    iterator end();
-
-    reverse_iterator rbegin();
-
-    reverse_iterator rend();
 };
 
 // Implementation

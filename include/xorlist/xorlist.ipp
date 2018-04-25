@@ -20,6 +20,38 @@ bool XorList<T, Allocator>::empty() const {
     return _size == 0;
 };
 
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::iterator
+XorList<T, Allocator>::begin() {
+    return iterator(_start);
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::iterator
+XorList<T, Allocator>::end() {
+    return iterator(nullptr, _end);
+}
+
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::reverse_iterator
+XorList<T, Allocator>::rbegin() {
+    return reverse_iterator(end());
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::reverse_iterator
+XorList<T, Allocator>::rend() {
+    return reverse_iterator(begin());
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::iterator
+XorList<T, Allocator>::insert_after(iterator pos, const T &value) {
+
+}
+
 template<typename T, class Allocator>
 void XorList<T, Allocator>::push_back(const_reference element) {
     node_pointer newNode = node_allocator_traits::allocate(_alloc, 1);
@@ -81,29 +113,11 @@ void XorList<T, Allocator>::_free(node_pointer toDelete) {
     node_allocator_traits::deallocate(_alloc, toDelete, 1);
     _size--;
 }
-
+/*
 template<typename T, class Allocator>
-typename XorList<T, Allocator>::iterator
-XorList<T, Allocator>::begin() {
-    return iterator(_start);
-}
+typename XorList<T, Allocator>::node_pointer
+XorList<T, Allocator>::_createNode(T&& value) {
 
-template<typename T, class Allocator>
-typename XorList<T, Allocator>::iterator
-XorList<T, Allocator>::end() {
-    return iterator(nullptr, _end);
 }
-
-
-template<typename T, class Allocator>
-typename XorList<T, Allocator>::reverse_iterator
-XorList<T, Allocator>::rbegin() {
-    return reverse_iterator(end());
-}
-
-template<typename T, class Allocator>
-typename XorList<T, Allocator>::reverse_iterator
-XorList<T, Allocator>::rend() {
-    return reverse_iterator(begin());
-}
+*/
 

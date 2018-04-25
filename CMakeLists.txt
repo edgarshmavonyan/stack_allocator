@@ -9,4 +9,5 @@ include_directories(include)
 include_directories(lib/googletest-master/googletest/include)
 
 add_subdirectory(lib/googletest-master)
+add_subdirectory(src)
 add_subdirectory(test)

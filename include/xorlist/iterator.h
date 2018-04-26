@@ -4,37 +4,47 @@
 #include <iostream>
 
 template<typename T>
-struct XorListIterator {
-
-    template<typename U>
-    friend class XorList;
-
-    typedef T value_type;
-    typedef T* pointer;
-    typedef std::ptrdiff_t difference_type;
-    typedef T& reference;
-    typedef std::bidirectional_iterator_tag iterator_category;
-
+class XorListIterator: public std::iterator<std::bidirectional_iterator_tag, T> {
 protected:
-    typedef XorListIterator<T> self;
-    typedef Node<T> node;
-    typedef Node<T>* node_pointer;
-    typedef uintptr_t calc_type;
+    const static bool is_const = std::is_same<std::remove_cv_t<T>, T>::value;
+
+    using self = XorListIterator;
+    using node = Node<T>;
+    using node_pointer = Node<T>*;
+    using calc_type = uintptr_t;
 
     calc_type _current;
     calc_type _previous;
 
 private:
+    template<typename U, typename Allocator>
+    friend class XorList;
 
-    node_pointer _cast(const calc_type& calc_ptr);
+    using base = std::iterator<std::bidirectional_iterator_tag, T>;
 
-    calc_type _cast(const node_pointer& ptr);
+    node_pointer _cast(const calc_type& calc_ptr) const;
 
+    calc_type _cast(const node_pointer& ptr) const;
+
+    node_pointer _getNode();
+
+    node_pointer _getPrevNode();
+
+    node_pointer _getNextNode();
+
+public:
+    using value_type = typename base::value_type;
+    using pointer = typename base::pointer;
+    using difference_type = typename base::difference_type;
+    using reference = typename base::reference;
+    using iterator_category = typename base::iterator_category;
 public:
     XorListIterator();
 
     // only for the start or for the end of a container
     explicit XorListIterator(node_pointer ptr);
+
+
 
     XorListIterator(node_pointer curr, node_pointer prev);
 

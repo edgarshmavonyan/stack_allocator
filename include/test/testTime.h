@@ -1,3 +1,4 @@
+#pragma once
 #include "testConstants.h"
 #include <vector>
 #include <list>

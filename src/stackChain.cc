@@ -1,7 +1,6 @@
 #include "stackallocator/stackChain.h"
 
-StackChain::area_pointer
-StackChain::_createNode() {
+StackChain::area_pointer StackChain::_createNode() {
     _areaCount++;
     return _cur = _cur->_nextArea = new area();
 }

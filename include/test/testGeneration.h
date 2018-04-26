@@ -1,6 +1,6 @@
+#pragma once
 #include <vector>
 #include "testConstants.h"
-#pragma once
 
 const size_t TEST_SIZE = 10000000;
 

@@ -5,13 +5,13 @@ XorListIterator<T>::XorListIterator() : _current(0), _previous(0) {}
 
 template<typename T>
 typename XorListIterator<T>::calc_type
-XorListIterator<T>::_cast(const node_pointer &ptr) {
+XorListIterator<T>::_cast(const node_pointer &ptr) const {
     return reinterpret_cast<calc_type>(ptr);
 }
 
 template<typename T>
 typename XorListIterator<T>::node_pointer
-XorListIterator<T>::_cast(const calc_type &calc_ptr) {
+XorListIterator<T>::_cast(const calc_type &calc_ptr) const {
     return reinterpret_cast<node_pointer>(calc_ptr);
 }
 
@@ -76,4 +76,22 @@ bool operator==(const XorListIterator<U>& first, const XorListIterator<U>& other
 template<typename U>
 bool operator!=(const XorListIterator<U>& first, const XorListIterator<U>& other) {
     return !(first == other);
+}
+
+template<typename T>
+typename XorListIterator<T>::node_pointer
+XorListIterator<T>::_getNode() {
+    return _cast(_current);
+}
+
+template<typename T>
+typename XorListIterator<T>::node_pointer
+XorListIterator<T>::_getPrevNode() {
+    return _cast(_previous);
+}
+
+template<typename T>
+typename XorListIterator<T>::node_pointer
+XorListIterator<T>::_getNextNode() {
+    return _cast(_cast(_current)->_neighboursXor ^ _previous);
 }

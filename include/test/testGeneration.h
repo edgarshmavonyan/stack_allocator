@@ -2,8 +2,6 @@
 #include <vector>
 #include "testConstants.h"
 
-const size_t TEST_SIZE = 10000000;
-
 std::vector<std::pair<TESTWORD, int> > generateSequence(size_t size) {
     std::vector<std::pair<TESTWORD, int> > result(size);
     size_t curSize = 0;

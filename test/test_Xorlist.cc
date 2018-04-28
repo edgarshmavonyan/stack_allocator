@@ -2,10 +2,9 @@
 #include "xorlist/xorlist.h"
 #include "test/testGeneration.h"
 #include "test/testTime.h"
-#include <deque>
 
 
-TEST(XorList, DISABLED_randomSeq_std) {
+TEST(XorList, randomSeq_std) {
     auto sequence = generateSequence(TEST_SIZE);
     double stdListTime = doRandomTesting<int, std::list, std::allocator>(sequence);
     double xorListTime = doRandomTesting<int, XorList, std::allocator>(sequence);
@@ -15,7 +14,7 @@ TEST(XorList, DISABLED_randomSeq_std) {
     std::cout << "XorList time: " << xorListTime << std::endl;
 }
 
-TEST(XorList, DISABLED_randomPushBack_std) {
+TEST(XorList, randomPushBack_std) {
     auto sequence = generateInsert(TEST_SIZE);
     double stdListTime = doInsertTesting<int, std::list, std::allocator>(sequence);
     double xorListTime = doInsertTesting<int, XorList, std::allocator>(sequence);
@@ -123,6 +122,16 @@ TEST(XorList, front_back) {
         ASSERT_EQ(myXorList.back(), *myXorList.rbegin());
         myXorList.pop_front();
     }
+}
+
+TEST(XorList, initializer_list) {
+    XorList<int> myXorList({0, 1, 2, 3, 4});
+    int cnt = 0;
+    for (auto it = myXorList.begin(); it != myXorList.end(); ++it, ++cnt)
+        ASSERT_EQ(cnt, *it);
+    myXorList = {2, 2, 2, 2, 2, 2};
+    for (const auto& element: myXorList)
+        ASSERT_EQ(2, element);
 }
 
 int main(int argv, char* argc[]) {

@@ -12,7 +12,7 @@ private:
     std::size_t _available;
     AllocationArea* _nextArea;
 
-    bool _checkAvailability(std::size_t requiredMemory);
+    bool _checkAvailability(std::size_t requiredMemory) const;
 
     char* _allocate(std::size_t requiredMemory);
 

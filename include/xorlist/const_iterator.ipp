@@ -35,6 +35,7 @@ Const_XorListIterator<T>::operator++() {
     calc_type next = _cast(_current)->_neighboursXor ^ _previous;
     _previous = _current;
     _current = next;
+    return *this;
 }
 
 template<typename T>
@@ -51,6 +52,7 @@ Const_XorListIterator<T>::operator--() {
     calc_type prev = _cast(_previous)->_neighboursXor ^ _current;
     _current = _previous;
     _previous = prev;
+    return *this;
 }
 
 template<typename T>

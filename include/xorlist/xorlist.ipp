@@ -49,7 +49,7 @@ XorList<T, Allocator>::XorList(const XorList& other, const allocator_type& alloc
 }
 
 template<typename T, class Allocator>
-XorList<T, Allocator>::XorList(XorList&& other):
+XorList<T, Allocator>::XorList(XorList&& other) noexcept:
         _start(other._start), _end(other._end),
         _size(other._size), _alloc(other._alloc) {
     other._init();
@@ -64,6 +64,13 @@ XorList<T, Allocator>::XorList(XorList&& other, const allocator_type& alloc):
         for (auto&& element: other)
             push_back(std::move(element));
     }
+}
+
+template<typename T, class Allocator>
+XorList<T, Allocator>::XorList(std::initializer_list<value_type> init, const allocator_type& alloc):
+        _start(nullptr), _end(nullptr), _size(0), _alloc(node_allocator_type(alloc)) {
+    for (const auto& element: init)
+        push_back(element);
 }
 
 template<typename T, class Allocator>
@@ -84,6 +91,8 @@ XorList<T, Allocator>&
 XorList<T, Allocator>::operator=(XorList&& other) noexcept {
     if (this != &other) {
         clear();
+        // if we propagate allocator, or they're equal, we only move pointers
+        // else we move element by element
         if (node_allocator_traits::propagate_on_container_move_assignment::value
             || node_allocator_traits::is_always_equal::value
             || _alloc == other._alloc) {
@@ -96,6 +105,15 @@ XorList<T, Allocator>::operator=(XorList&& other) noexcept {
             for (auto &&element: other)
                 push_back(std::move(element));
     }
+    return *this;
+}
+
+template<typename T, class Allocator>
+XorList<T, Allocator>&
+XorList<T, Allocator>::operator=(std::initializer_list<value_type> ilist) {
+    clear();
+    for (const auto& element: ilist)
+        push_back(element);
     return *this;
 }
 

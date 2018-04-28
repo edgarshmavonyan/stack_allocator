@@ -1,8 +1,7 @@
 #include "stackallocator/stackAllocator.h"
 #include <gtest/gtest.h>
 #include "xorlist/xorlist.h"
-#include "test/testGeneration.h"
-#include "test/testTime.h"
+#include "test/testStackTime.h"
 
 
 TEST(StackAllocator, threeTestsStd) {

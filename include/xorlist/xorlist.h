@@ -50,7 +50,7 @@ protected:
     void _init();
 
 public:
-    explicit XorList(const allocator_type& alloc = Allocator());
+    explicit XorList(const allocator_type& alloc = allocator_type());
 
     allocator_type get_allocator() const;
 
@@ -58,14 +58,17 @@ public:
 
     XorList(const XorList& other, const allocator_type& alloc);
 
-    XorList(XorList&& other);
+    XorList(XorList&& other) noexcept;
 
-    // to_check
     XorList(XorList&& other, const allocator_type& alloc);
+
+    XorList(std::initializer_list<value_type> init, const allocator_type& alloc = allocator_type());
 
     XorList& operator=(const XorList& other);
 
     XorList& operator=(XorList&& other) noexcept;
+
+    XorList& operator=(std::initializer_list<value_type> ilist);
 
     ~XorList();
 

@@ -1,28 +1,18 @@
 #include "stackallocator/stackAllocator.h"
 #include <gtest/gtest.h>
+#include "xorlist/xorlist.h"
 #include "test/testGeneration.h"
 #include "test/testTime.h"
 
 
-TEST(stackAllocator, testRandomSequence) {
-    auto sequence = generateSequence(TEST_SIZE);
-    std::cout << "Random test" << std::endl;
-    std::cout << "User stack time: " << doRandomTesting<int, std::list, StackAllocator>(sequence) << std::endl;
-    std::cout << "Built-in stack time: " << doRandomTesting<>(sequence) << std::endl;
+TEST(StackAllocator, threeTestsStd) {
+    std::cout << "Comparison on std::list" << std::endl;
+    threeTestsForTime<int, std::list>(TEST_SIZE);
 }
 
-TEST(stackAllocator, testFullInsert) {
-    auto sequence = generateInsert(TEST_SIZE);
-    std::cout << "Insert test" << std::endl;
-    std::cout << "User stack time: " << doInsertTesting<int, std::list, StackAllocator>(sequence, false) << std::endl;
-    std::cout << "Built-in stack time: " << doInsertTesting<>(sequence, false) << std::endl;
-}
-
-TEST(stackAllocator, testInsertPop) {
-    auto sequence = generateInsert(TEST_SIZE);
-    std::cout << "InsertPop test" << std::endl;
-    std::cout << "User stack time: " << doInsertTesting<int, std::list, StackAllocator>(sequence, true) << std::endl;
-    std::cout << "Built-in stack time: " << doInsertTesting<>(sequence, true) << std::endl;
+TEST(StackAllocator, threeTestsXorList) {
+    std::cout << "Comparison on XorList" << std::endl;
+    threeTestsForTime<int, XorList>(TEST_SIZE);
 }
 
 int main(int argc, char* argv[]) {

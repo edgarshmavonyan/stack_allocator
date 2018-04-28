@@ -30,10 +30,9 @@ template<typename T, class Allocator>
 XorList<T, Allocator>::XorList(const XorList& other):
         _start(nullptr), _end(nullptr), _size(0),
         _alloc(node_allocator_traits::select_on_container_copy_construction(other._alloc)) {
-    for (auto it = other.begin(); it != other.end(); ++it)
-        push_back(*it);
-//    for (const auto& element: other)
-//        push_back(element);
+
+    for (const auto& element: other)
+        push_back(element);
 }
 
 template<typename T, class Allocator>

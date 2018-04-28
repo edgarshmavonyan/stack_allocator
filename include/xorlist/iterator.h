@@ -6,9 +6,8 @@
 template<typename T>
 class XorListIterator: public std::iterator<std::bidirectional_iterator_tag, T> {
 protected:
-    const static bool is_const = std::is_same<std::remove_cv_t<T>, T>::value;
 
-    using self = XorListIterator;
+    using self = XorListIterator<T>;
     using node = Node<T>;
     using node_pointer = Node<T>*;
     using calc_type = uintptr_t;
@@ -16,21 +15,21 @@ protected:
     calc_type _current;
     calc_type _previous;
 
-private:
+
     template<typename U, typename Allocator>
     friend class XorList;
-
+private:
     using base = std::iterator<std::bidirectional_iterator_tag, T>;
 
     node_pointer _cast(const calc_type& calc_ptr) const;
 
     calc_type _cast(const node_pointer& ptr) const;
 
-    node_pointer _getNode();
+    inline node_pointer _getNode();
 
-    node_pointer _getPrevNode();
+    inline node_pointer _getPrevNode();
 
-    node_pointer _getNextNode();
+    inline node_pointer _getNextNode();
 
 public:
     using value_type = typename base::value_type;
@@ -41,12 +40,7 @@ public:
 public:
     XorListIterator();
 
-    // only for the start or for the end of a container
-    explicit XorListIterator(node_pointer ptr);
-
-
-
-    XorListIterator(node_pointer curr, node_pointer prev);
+    explicit XorListIterator(node_pointer curr, node_pointer prev = nullptr);
 
     XorListIterator(const self& other) = default;
 

@@ -74,10 +74,9 @@ TEST(XorList, constructor) {
 }
 
 int main(int argv, char* argc[]) {
-//    std::allocator<int> a;
-//    std::allocator_traits<std::allocator<int> >::propagate_on_container_copy_assignment;
-//    std::list
+    std::list a;
+    a.push_back(5);
+    std::list<int>::iterator it = a.begin();
     testing::InitGoogleTest(&argv, argc);
-    std::deque<int>::const_iterator
     return RUN_ALL_TESTS();
 }

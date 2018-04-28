@@ -1,6 +1,7 @@
 #pragma once
 #include "cstdint"
 #include "iterator.h"
+#include "const_iterator.h"
 #include <iostream>
 
 // Definition
@@ -19,7 +20,7 @@ public:
 
 
     using iterator = XorListIterator<T>;
-    using const_iterator = XorListIterator<const T>;
+    using const_iterator = Const_XorListIterator<T>;
     using reverse_iterator = std::reverse_iterator<XorListIterator<T> >;
     using const_reverse_iterator = std::reverse_iterator<XorListIterator<const T> >;
 protected:

@@ -21,8 +21,8 @@ public:
 
     using iterator = XorListIterator<T>;
     using const_iterator = Const_XorListIterator<T>;
-    using reverse_iterator = std::reverse_iterator<XorListIterator<T> >;
-    using const_reverse_iterator = std::reverse_iterator<XorListIterator<const T> >;
+    using reverse_iterator = std::reverse_iterator<iterator >;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator >;
 protected:
     using allocator_pointer = Allocator*;
     using allocator_type = Allocator;
@@ -45,7 +45,9 @@ protected:
 
     void _hook(node_pointer curNode, node_pointer nextNode, node_pointer newNode);
 
-    void _hookOut(node_pointer left, node_pointer right, node_pointer toDelete);
+    void _unhook(node_pointer left, node_pointer right, node_pointer toDelete);
+
+    void _init();
 
 public:
     explicit XorList(const allocator_type& alloc = Allocator());
@@ -63,7 +65,7 @@ public:
 
     XorList& operator=(const XorList& other);
 
-    XorList& operator=(XorList&& other);
+    XorList& operator=(XorList&& other) noexcept;
 
     ~XorList();
 
@@ -87,6 +89,14 @@ public:
 
     reverse_iterator rend();
 
+    const_reverse_iterator rbegin() const;
+
+    const_reverse_iterator rend() const;
+
+    const_reverse_iterator crbegin();
+
+    const_reverse_iterator crend();
+
     iterator insert_after(iterator pos, const_reference value);
 
     iterator insert_after(iterator pos, rvalue_reference value);
@@ -97,7 +107,11 @@ public:
 
     reference front();
 
+    const_reference front() const;
+
     reference back();
+
+    const_reference back() const;
 
     void erase(iterator cur);
 

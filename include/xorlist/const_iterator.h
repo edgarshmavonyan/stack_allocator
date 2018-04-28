@@ -1,6 +1,7 @@
 #pragma once
 #include "cstdint"
 #include "node.h"
+#include "iterator.h"
 #include <iostream>
 
 template<typename T>
@@ -16,9 +17,10 @@ protected:
     calc_type _current;
     calc_type _previous;
 
+    // for better performance
     template<typename U, typename Allocator>
     friend class XorList;
-private:
+
     using base = std::iterator<std::bidirectional_iterator_tag, T, std::ptrdiff_t, const T*, const T&>;
 
     node_pointer _cast(const calc_type& calc_ptr) const;
@@ -40,13 +42,11 @@ public:
 
     Const_XorListIterator();
 
-    // only for the start or for the end of a container
-
     explicit Const_XorListIterator(node_pointer curr, node_pointer prev = nullptr);
 
     Const_XorListIterator(const self& other) = default;
 
-    Const_XorListIterator(const iterator& other);
+    explicit Const_XorListIterator(const iterator& other);
 
     Const_XorListIterator& operator=(const self& other) = default;
 

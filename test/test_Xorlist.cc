@@ -29,8 +29,26 @@ TEST(XorList, iterator_test) {
     XorList<int> myXorList;
     for (int i = 0; i < 10; i++)
         myXorList.push_back(5);
-    for (auto it = myXorList.begin(); it != myXorList.end(); ++it)
+    auto const_it = myXorList.cbegin();
+    for (auto it = myXorList.begin(); it != myXorList.end() && const_it != myXorList.cend(); ++it, ++const_it) {
         ASSERT_EQ(*it, 5);
+        ASSERT_EQ(*const_it, 5);
+        auto casted_const_it = XorList<int>::const_iterator(it);
+        ASSERT_EQ(casted_const_it, const_it);
+    }
+}
+
+TEST(XorList, reverse_iterator_test) {
+    XorList<int> myXorList;
+    for (int i = 0; i < 10; i++)
+        myXorList.push_back(5);
+    auto const_it = myXorList.crbegin();
+    for (auto it = myXorList.rbegin(); it != myXorList.rend() && const_it != myXorList.crend(); ++it, ++const_it) {
+        ASSERT_EQ(*it, 5);
+        ASSERT_EQ(*const_it, 5);
+        auto casted_const_it = XorList<int>::const_reverse_iterator(it);
+        ASSERT_EQ(casted_const_it, const_it);
+    }
 }
 
 TEST(XorList, insert_after) {
@@ -68,15 +86,46 @@ TEST(XorList, constructor) {
     XorList<int> myXorList;
     for (int i = 0; i < 10; i++)
         myXorList.push_back(5);
-    auto b(myXorList);
-    for (auto& elem: b)
-        std::cout << elem;
+    auto copied(myXorList);
+    auto my_it = myXorList.begin();
+    auto copy_it = copied.begin();
+    for (; my_it != myXorList.end() && copy_it != copied.end(); ++my_it, ++copy_it)
+        ASSERT_EQ(*my_it, *copy_it);
+}
+
+TEST(XorList, move_constructor) {
+    XorList<int> myXorList;
+    for (int i = 0; i < 10; i++)
+        myXorList.push_back(5);
+    XorList<int> movedXorList(std::move(myXorList));
+    ASSERT_EQ(movedXorList.size(), 10);
+    for (const auto& element: movedXorList)
+        ASSERT_EQ(element, 5);
+}
+
+TEST(XorList, move_assign) {
+    XorList<int> myXorList;
+    for (int i = 0; i < 10; i++)
+        myXorList.push_back(5);
+    XorList<int> movedXorList;
+    movedXorList = std::move(myXorList);
+    ASSERT_EQ(movedXorList.size(), 10);
+    for (const auto& element: movedXorList)
+        ASSERT_EQ(element, 5);
+}
+
+TEST(XorList, front_back) {
+    XorList<int> myXorList;
+    for (int i = 0; i < 10; i++)
+        myXorList.push_back(5);
+    while (!myXorList.empty()) {
+        ASSERT_EQ(myXorList.front(), *myXorList.begin());
+        ASSERT_EQ(myXorList.back(), *myXorList.rbegin());
+        myXorList.pop_front();
+    }
 }
 
 int main(int argv, char* argc[]) {
-    std::list a;
-    a.push_back(5);
-    std::list<int>::iterator it = a.begin();
     testing::InitGoogleTest(&argv, argc);
     return RUN_ALL_TESTS();
 }

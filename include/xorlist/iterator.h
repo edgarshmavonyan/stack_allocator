@@ -6,6 +6,12 @@
 template<typename T>
 class XorListIterator: public std::iterator<std::bidirectional_iterator_tag, T> {
 protected:
+    // to have better performance
+    template<typename U, typename Allocator>
+    friend class XorList;
+
+    // to have iterator -> const_iterator cast
+    template<typename U> friend class Const_XorListIterator;
 
     using self = XorListIterator<T>;
     using node = Node<T>;
@@ -15,10 +21,6 @@ protected:
     calc_type _current;
     calc_type _previous;
 
-
-    template<typename U, typename Allocator>
-    friend class XorList;
-private:
     using base = std::iterator<std::bidirectional_iterator_tag, T>;
 
     node_pointer _cast(const calc_type& calc_ptr) const;
@@ -37,7 +39,7 @@ public:
     using difference_type = typename base::difference_type;
     using reference = typename base::reference;
     using iterator_category = typename base::iterator_category;
-public:
+
     XorListIterator();
 
     explicit XorListIterator(node_pointer curr, node_pointer prev = nullptr);

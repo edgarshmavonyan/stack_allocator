@@ -20,6 +20,16 @@ Const_XorListIterator<T>::Const_XorListIterator(node_pointer curr, node_pointer 
         _current(_cast(curr)), _previous(_cast(prev)) {}
 
 template<typename T>
+Const_XorListIterator<T>::Const_XorListIterator(const iterator& other) :
+        _current(other._current), _previous(other._previous) {}
+
+template<typename T>
+Const_XorListIterator<T>& Const_XorListIterator<T>::operator=(const iterator& other) {
+    _current = other._current; _previous = other._previous;
+    return *this;
+}
+
+template<typename T>
 typename Const_XorListIterator<T>::self&
 Const_XorListIterator<T>::operator++() {
     calc_type next = _cast(_current)->_neighboursXor ^ _previous;

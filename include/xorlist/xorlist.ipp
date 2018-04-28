@@ -17,6 +17,11 @@ XorList<T, Allocator>::_createNode(const_reference value, node_pointer before, n
 }
 
 template<typename T, class Allocator>
+void XorList<T, Allocator>::_init() {
+    _start = nullptr; _end = nullptr; _size = 0; _alloc = node_allocator_type(Allocator());
+}
+
+template<typename T, class Allocator>
 XorList<T, Allocator>::XorList(const allocator_type& alloc):
         _start(nullptr), _end(nullptr), _size(0), _alloc(node_allocator_type(alloc)) {}
 
@@ -38,32 +43,62 @@ XorList<T, Allocator>::XorList(const XorList& other):
 template<typename T, class Allocator>
 XorList<T, Allocator>::XorList(const XorList& other, const allocator_type& alloc):
         _start(nullptr), _end(nullptr), _size(0), _alloc(alloc) {
+
     for (const auto& element: other)
         push_back(element);
 }
 
 template<typename T, class Allocator>
 XorList<T, Allocator>::XorList(XorList&& other):
-        _start(std::move(other._start)), _end(std::move(other._end)),
-        _size(std::move(other._size)), _alloc(std::move(other._alloc)) {}
+        _start(other._start), _end(other._end),
+        _size(other._size), _alloc(other._alloc) {
+    other._init();
+}
 
 template<typename T, class Allocator>
 XorList<T, Allocator>::XorList(XorList&& other, const allocator_type& alloc):
-        _start(std::move(other._start)), _end(std::move(other._end)),
-        _size(std::move(other._size)), _alloc(alloc) {
+        _start(other._start), _end(other._end),
+        _size(other._size), _alloc(alloc) {
     if (_alloc != other._alloc) {
         _start = nullptr; _end = nullptr; _size = 0;
         for (auto&& element: other)
             push_back(std::move(element));
     }
 }
-/*
+
 template<typename T, class Allocator>
 XorList<T, Allocator>&
 XorList<T, Allocator>::operator=(const XorList& other) {
-
+    if (this != &other) {
+        clear();
+        if (node_allocator_traits::propagate_on_container_copy_assignment::value)
+            _alloc = other._alloc;
+        for (const auto& element: other)
+            push_back(element);
+    }
+    return *this;
 }
-*/
+
+template<typename T, class Allocator>
+XorList<T, Allocator>&
+XorList<T, Allocator>::operator=(XorList&& other) noexcept {
+    if (this != &other) {
+        clear();
+        if (node_allocator_traits::propagate_on_container_move_assignment::value
+            || node_allocator_traits::is_always_equal::value
+            || _alloc == other._alloc) {
+            _alloc = other._alloc;
+            _start = other._start;
+            _end = other._end;
+            _size = other._size;
+            other._init();
+        } else
+            for (auto &&element: other)
+                push_back(std::move(element));
+    }
+    return *this;
+}
+
 template<typename T, class Allocator>
 XorList<T, Allocator>::~XorList() {
     clear();
@@ -128,6 +163,30 @@ template<typename T, class Allocator>
 typename XorList<T, Allocator>::reverse_iterator
 XorList<T, Allocator>::rend() {
     return reverse_iterator(begin());
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::const_reverse_iterator
+XorList<T, Allocator>::rbegin() const {
+    return const_reverse_iterator(cend());
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::const_reverse_iterator
+XorList<T, Allocator>::rend() const {
+    return const_reverse_iterator(cbegin());
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::const_reverse_iterator
+XorList<T, Allocator>::crbegin() {
+    return const_reverse_iterator(cend());
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::const_reverse_iterator
+XorList<T, Allocator>::crend() {
+    return const_reverse_iterator(cbegin());
 }
 
 template<typename T, class Allocator>
@@ -201,24 +260,12 @@ void XorList<T, Allocator>::push_front(rvalue_reference element) {
 
 template<typename T, class Allocator>
 void XorList<T, Allocator>::pop_back() {
-    node_pointer toDelete = _end;
-    _end = reinterpret_cast<node_pointer>(_end->_neighboursXor);
-    if (_size > 1)
-        _end->_neighboursXor ^= reinterpret_cast<uintptr_t>(toDelete);
-    else
-        _start = nullptr;
-    _free(toDelete);
+    erase(--end());
 }
 
 template<typename T, class Allocator>
 void XorList<T, Allocator>::pop_front() {
-    node_pointer toDelete = _start;
-    _start = reinterpret_cast<node_pointer>(_start->_neighboursXor);
-    if (_size > 1)
-        _start->_neighboursXor ^= reinterpret_cast<uintptr_t>(toDelete);
-    else
-        _end = nullptr;
-    _free(toDelete);
+    erase(begin());
 }
 
 template<typename T, class Allocator>
@@ -236,24 +283,42 @@ void XorList<T, Allocator>::_free(node_pointer toDelete) {
 
 template<typename T, class Allocator>
 typename XorList<T, Allocator>::reference
-XorList<T, Allocator>::back() {
-    return *_end;
+XorList<T, Allocator>::front() {
+    return _start->_value;
+}
+
+template<typename T, class Allocator>
+typename XorList<T, Allocator>::const_reference
+XorList<T, Allocator>::front() const {
+    return _start->_value;
 }
 
 template<typename T, class Allocator>
 typename XorList<T, Allocator>::reference
-XorList<T, Allocator>::front() {
-    return *_start;
+XorList<T, Allocator>::back() {
+    return _end->_value;
 }
 
 template<typename T, class Allocator>
-void XorList<T, Allocator>::_hookOut(node_pointer left, node_pointer right, node_pointer toDelete) {
-    left->_changeNeighbour(toDelete, right);
-    right->_changeNeighbour(toDelete, left);
+typename XorList<T, Allocator>::const_reference
+XorList<T, Allocator>::back() const {
+    return _end->_value;
+}
+
+template<typename T, class Allocator>
+void XorList<T, Allocator>::_unhook(node_pointer left, node_pointer right, node_pointer toDelete) {
+    if (left != nullptr)
+        left->_changeNeighbour(toDelete, right);
+    else
+        _start = right;
+    if (right != nullptr)
+        right->_changeNeighbour(toDelete, left);
+    else
+        _end = left;
     _free(toDelete);
 }
 
 template<typename T, class Allocator>
 void XorList<T, Allocator>::erase(iterator cur) {
-    _hookOut(cur._getPrevNode(), cur._getNextNode(), cur._getNode());
+    _unhook(cur._getPrevNode(), cur._getNextNode(), cur._getNode());
 }

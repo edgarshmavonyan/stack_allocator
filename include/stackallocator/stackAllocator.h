@@ -9,6 +9,7 @@
 
 template<class T>
 class StackAllocator {
+    // for comparison
     template<class U>
     friend class StackAllocator;
 public:
@@ -36,7 +37,7 @@ public:
 
     pointer allocate(std::size_t elementsNumber);
 
-    void deallocate(pointer ptr, size_t size) {}
+    void deallocate(pointer, size_t) {}
 
     template<class T1, class T2>
     bool friend operator==(const StackAllocator<T1>& first, const StackAllocator<T2>& other);

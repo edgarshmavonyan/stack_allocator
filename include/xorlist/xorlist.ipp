@@ -96,10 +96,10 @@ XorList<T, Allocator>::operator=(XorList&& other) noexcept {
         if (node_allocator_traits::propagate_on_container_move_assignment::value
             || node_allocator_traits::is_always_equal::value
             || _alloc == other._alloc) {
-            _alloc = other._alloc;
             _start = other._start;
             _end = other._end;
             _size = other._size;
+            _alloc = other._alloc;
             other._init();
         } else
             for (auto &&element: other)

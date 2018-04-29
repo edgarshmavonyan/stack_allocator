@@ -8,13 +8,13 @@ private:
 
     static const std::size_t MAX_ALLOCATION = 1048576;
 
-    void* _cur;
+    char* _cur;
     std::size_t _available;
     AllocationArea* _nextArea;
 
     bool _checkAvailability(std::size_t requiredMemory) const;
 
-    void* _allocate(std::size_t requiredMemory);
+    char* _allocate(std::size_t requiredMemory);
 
 public:
     AllocationArea();

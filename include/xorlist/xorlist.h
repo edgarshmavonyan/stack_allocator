@@ -31,11 +31,10 @@ protected:
     using node_allocator_type = typename Allocator::template rebind<node>::other;
     using node_allocator_traits = std::allocator_traits<node_allocator_type > ;
 
-    node_allocator_type _alloc;
     node_pointer _start;
     node_pointer _end;
     size_t _size;
-
+    node_allocator_type _alloc;
 
     void _free(node_pointer toDelete);
 

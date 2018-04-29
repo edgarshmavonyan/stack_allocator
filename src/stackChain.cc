@@ -6,7 +6,7 @@ StackChain::area_pointer StackChain::_createNode() {
 }
 
 
-char* StackChain::allocate(size_t requiredMemory) {
+void* StackChain::allocate(size_t requiredMemory) {
     if (!_cur->_checkAvailability(requiredMemory))
         _createNode();
     return _cur->_allocate(requiredMemory);

@@ -26,7 +26,7 @@ public:
 
     ~StackChain();
 
-    char* allocate(size_t requiredMemory);
+    void* allocate(size_t requiredMemory);
 };
 
 //Implementation

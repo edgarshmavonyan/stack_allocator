@@ -15,5 +15,5 @@ void* AllocationArea::_allocate(size_t requiredMemory) {
 
 
 AllocationArea::~AllocationArea() {
-    delete [] (_cur + _available - MAX_ALLOCATION);
+    ::operator delete(_cur + _available - MAX_ALLOCATION);
 }

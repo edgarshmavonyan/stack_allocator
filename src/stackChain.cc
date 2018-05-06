@@ -2,7 +2,7 @@
 
 StackChain::area_pointer StackChain::_createNode() {
     _areaCount++;
-    return _cur = _cur->_nextArea = new area();
+    return _cur = _cur->_nextArea = new area;
 }
 
 
@@ -12,7 +12,9 @@ void* StackChain::allocate(size_t requiredMemory) {
     return _cur->_allocate(requiredMemory);
 }
 
-StackChain::StackChain() : _areaCount(1), _start(new AllocationArea()), _cur(_start) {}
+StackChain::StackChain() : _areaCount(1),
+                           _start(new area),
+                           _cur(_start) {}
 
 StackChain::~StackChain() {
     area_pointer cur;

@@ -7,7 +7,6 @@ bool AllocationArea::_checkAvailability(size_t requiredMemory) const {
 }
 
 char* AllocationArea::_allocate(size_t requiredMemory) {
-    assert(_checkAvailability(requiredMemory));
     _available -= requiredMemory;
     _cur += requiredMemory;
     return _cur - requiredMemory;
@@ -15,5 +14,5 @@ char* AllocationArea::_allocate(size_t requiredMemory) {
 
 
 AllocationArea::~AllocationArea() {
-    ::operator delete((void*) _cur + _available - MAX_ALLOCATION);
+    ::operator delete((void*) (_cur + _available - MAX_ALLOCATION));
 }
